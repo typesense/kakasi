@@ -45,7 +45,7 @@
 #ifdef LIBRARY
 # include "libkakasi.h"
 #endif
-
+#include "errno.h"
 #ifdef KAKASI_SUPPORT_UTF8
 #include <iconv.h>
 extern iconv_t fromutf8;
@@ -551,12 +551,18 @@ getkanji(c)
 	    }
 	    utf8[0] = c1;
 	    for (i = 1; i < len; i ++) {
-        utf8[i] = get1byte();
+		utf8[i] = get1byte();
 	    }
 	    fromlen = len;
 	    if (fromutf8 == (iconv_t) -1)
 		fromutf8 = iconv_open("EUC-JP", "UTF-8");
+	    errno = 0;
 	    iconv(fromutf8, &from, &fromlen, &to, &tolen);
+        if(errno == EILSEQ) {
+            c->type = OTHER;
+            c->c1 = 0xff;
+            return;
+        }
 	    if (tolen == 1) {
 		unget1byte(eucj[1]);
 		unget1byte(eucj[0]);

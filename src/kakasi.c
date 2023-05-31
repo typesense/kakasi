@@ -637,7 +637,7 @@ char *
 kakasi_do(str)
      char *str;
 {
-    Character c[KAKASIBUF], r[KAKASIBUF];
+    Character c[KAKASIBUF] = {0}, r[KAKASIBUF] = {0};
     int clen, ptype, pctype;
 
     setcharbuffer((unsigned char *)str);
