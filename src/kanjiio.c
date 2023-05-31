@@ -559,8 +559,7 @@ getkanji(c)
 	    errno = 0;
 	    iconv(fromutf8, &from, &fromlen, &to, &tolen);
         if(errno == EILSEQ) {
-            c->type = OTHER;
-            c->c1 = 0xff;
+            getkanji(c);
             return;
         }
 	    if (tolen == 1) {
